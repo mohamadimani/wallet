@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\PaymentStatusEnum;
+use Ramsey\Uuid\Type\Integer;
 
 class payment extends Model
 {
@@ -23,7 +24,7 @@ class payment extends Model
     ];
 
 
-    protected $paymentStatusEnum = [
+    protected $casts = [
         'status' => PaymentStatusEnum::class
     ];
 }

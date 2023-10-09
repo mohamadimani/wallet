@@ -11,7 +11,7 @@ class StorepaymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,10 @@ class StorepaymentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        $validate = [
+            'title' => ['required'],
         ];
+
+        return $validate;
     }
 }

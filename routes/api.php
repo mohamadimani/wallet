@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +21,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 
 Route::group(['prefix' => 'v1'], function () use ($router) {
-    $router->get('shippings', [ShippingController::class, 'index']);
+    $router->post('payments', [PaymentController::class, 'store']);
+    $router->patch('payments/{payment}/reject', [PaymentController::class, 'reject']);
 });

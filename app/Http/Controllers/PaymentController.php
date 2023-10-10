@@ -6,16 +6,22 @@ use App\Enums\PaymentStatusEnum;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\payment;
+use App\Helpers\Helper;
+use App\Http\Resources\PaymentCollection;
+use App\Http\Resources\PaymentResource;
+use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PaymentController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $payments = payment::all();
+        return  $this->successResponse(new PaymentCollection($payments));
     }
 
     /**
@@ -35,13 +41,14 @@ class PaymentController extends Controller
             'title' => $request->title,
             'user_id' => $request->user_id,
             'amount' => $request->amount,
-            'priceunit' =>  $request->priceunit,
+            'currency' =>  $request->currency,
             'attach_file' =>  $request->attach_file,
             'payment_at' => $request->payment_at,
+            'unique_id' => Helper::uniqStr(),
         ];
 
         $payment = payment::create($input);
-        return response()->json($payment, 201);
+        return  $this->successResponse(new PaymentResource($payment));
     }
 
     /**
@@ -49,7 +56,7 @@ class PaymentController extends Controller
      */
     public function show(payment $payment)
     {
-        //
+        return  $this->successResponse(new PaymentResource($payment));
     }
 
     /**
@@ -74,20 +81,16 @@ class PaymentController extends Controller
     public function reject(UpdatepaymentRequest $request, payment $payment)
     {
         try {
-
             if ($payment->status->value != PaymentStatusEnum::Pending->value) {
                 return response()->json('Cant set Rejected for status', 400);
             }
-
             $input = [
                 'status' => PaymentStatusEnum::Rejected
             ];
-
-            $payment->updates($input);
-            return response()->json($payment, 200);
+            $payment->update($input);
+            return  $this->successResponse($payment);
         } catch (ModelNotFoundException $exception) {
-            dd('ssssss');
-            return response()->json('error', 400);
+            return  $this->errorResponse(['error']);
         }
     }
 

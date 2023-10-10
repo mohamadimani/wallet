@@ -15,12 +15,13 @@ class payment extends Model
         'title',
         'user_id',
         'amount',
-        'priceunit',
+        'currency',
         'attach_file',
         'payment_at',
         'status',
         'rejected_at',
         'verified_at',
+        'unique_id',
     ];
 
 

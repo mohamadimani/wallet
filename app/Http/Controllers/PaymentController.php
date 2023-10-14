@@ -9,8 +9,12 @@ use App\Models\payment;
 use App\Helpers\Helper;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
+use App\Jobs\rejectPaymentEmail;
+use App\Mail\RejectedPayment;
+use App\Mail\StorePayment;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -21,7 +25,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = payment::all();
-        return  $this->successResponse(new PaymentCollection($payments));
+        return  $this->successResponse(new PaymentCollection($payments), __('payment.messages.payment_list_found_successfully'), 200);
     }
 
     /**
@@ -48,7 +52,11 @@ class PaymentController extends Controller
         ];
 
         $payment = payment::create($input);
-        return  $this->successResponse(new PaymentResource($payment));
+
+        $message = 'Your payment with '. $payment->unique_id .' key has been created! :)';
+        Mail::to('testreceiver@gmail.com')->send((new StorePayment($message))->onQueue('StorePayment'));
+
+        return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_created'), 201);
     }
 
     /**
@@ -56,7 +64,7 @@ class PaymentController extends Controller
      */
     public function show(payment $payment)
     {
-        return  $this->successResponse(new PaymentResource($payment));
+        return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_found'));
     }
 
     /**
@@ -82,15 +90,21 @@ class PaymentController extends Controller
     {
         try {
             if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-                return response()->json('Cant set Rejected for status', 400);
+                return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
             }
             $input = [
                 'status' => PaymentStatusEnum::Rejected
             ];
             $payment->update($input);
-            return  $this->successResponse($payment);
+
+            $message = 'payment with '. $payment->unique_id .' key has been rejected';
+            Mail::to('testreceiver@gmail.com')->send((new RejectedPayment($message))->onQueue('rejectPayment'));
+
+            // rejectPaymentEmail::dispatch($payment, $message);
+
+            return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
         } catch (ModelNotFoundException $exception) {
-            return  $this->errorResponse(['error']);
+            return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
         }
     }
 

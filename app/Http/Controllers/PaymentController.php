@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentStatusEnum;
+use App\Events\RejectPaymentEvent;
+use App\Events\StorePaymentEvent;
+use App\Events\VerifyPaymentEvent;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\payment;
 use App\Helpers\Helper;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
-use App\Jobs\rejectPaymentEmail;
+use App\Jobs\RejectPaymentEmail;
 use App\Mail\RejectedPayment;
 use App\Mail\StorePayment;
 use App\Traits\ApiResponse;
@@ -50,11 +53,9 @@ class PaymentController extends Controller
             'payment_at' => $request->payment_at,
             'unique_id' => Helper::uniqStr(),
         ];
-
         $payment = payment::create($input);
 
-        $message = 'Your payment with '. $payment->unique_id .' key has been created! :)';
-        Mail::to('testreceiver@gmail.com')->send((new StorePayment($message))->onQueue('StorePayment'));
+        StorePaymentEvent::dispatch($payment);
 
         return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_created'), 201);
     }
@@ -88,24 +89,35 @@ class PaymentController extends Controller
      */
     public function reject(UpdatepaymentRequest $request, payment $payment)
     {
-        try {
-            if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-                return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
-            }
-            $input = [
-                'status' => PaymentStatusEnum::Rejected
-            ];
-            $payment->update($input);
-
-            $message = 'payment with '. $payment->unique_id .' key has been rejected';
-            Mail::to('testreceiver@gmail.com')->send((new RejectedPayment($message))->onQueue('rejectPayment'));
-
-            // rejectPaymentEmail::dispatch($payment, $message);
-
-            return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
-        } catch (ModelNotFoundException $exception) {
+        if ($payment->status->value != PaymentStatusEnum::Pending->value) {
             return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
         }
+        $input = [
+            'status' => PaymentStatusEnum::Rejected
+        ];
+        $payment->update($input);
+
+        RejectPaymentEvent::dispatch($payment);
+        // RejectPaymentEmail::dispatch($payment, $message);
+
+        return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
+    }
+
+    public function verified(UpdatepaymentRequest $request, payment $payment)
+    {
+
+        if ($payment->status->value != PaymentStatusEnum::Pending->value) {
+            return  $this->errorResponse(['error'], __('payment.errors.you_can_only_verify_pending_payments'), 400);
+        }
+        $input = [
+            'status' => PaymentStatusEnum::Verified
+        ];
+        $payment->update($input);
+
+        VerifyPaymentEvent::dispatch($payment);
+        // RejectPaymentEmail::dispatch($payment, $message);
+
+        return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_verified'));
     }
 
     /**

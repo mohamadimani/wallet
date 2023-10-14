@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class transactios extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'payment_id',
+        'balance',
+        'amount',
+        'currency',
+        'unique_id'
+    ];
 }

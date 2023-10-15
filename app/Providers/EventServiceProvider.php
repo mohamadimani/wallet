@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\RejectPaymentEvent;
+use App\Events\StorePaymentEvent;
+use App\Events\VerifyPaymentEvent;
+use App\Listeners\RejectPaymentEmail;
+use App\Listeners\StorePaymentEmail;
+use App\Listeners\VerifyPaymentEmail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -17,6 +23,15 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        RejectPaymentEvent::class => [
+            RejectPaymentEmail::class,
+        ],
+        StorePaymentEvent::class => [
+            StorePaymentEmail::class,
+        ],
+        VerifyPaymentEvent::class => [
+            VerifyPaymentEmail::class,
         ],
     ];
 

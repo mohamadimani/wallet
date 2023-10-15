@@ -25,4 +25,5 @@ Route::group(['prefix' => 'v1'], function () use ($router) {
     $router->get('payments/{payment:unique_id}', [PaymentController::class, 'show']);
     $router->get('payments', [PaymentController::class, 'index']);
     $router->patch('payments/{payment:unique_id}/reject', [PaymentController::class, 'reject']);
+    $router->patch('payments/{payment:unique_id}/verify', [PaymentController::class, 'verify']);
 });

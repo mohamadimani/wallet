@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentStatusEnum;
+use App\Events\RejectPaymentEvent;
+use App\Events\StorePaymentEvent;
+use App\Events\VerifyPaymentEvent;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\payment;
 use App\Helpers\Helper;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
+use App\Jobs\RejectPaymentEmail;
+use App\Mail\RejectedPayment;
+use App\Mail\StorePayment;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -21,7 +28,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = payment::all();
-        return  $this->successResponse(new PaymentCollection($payments));
+        return  $this->successResponse(new PaymentCollection($payments), __('payment.messages.payment_list_found_successfully'), 200);
     }
 
     /**
@@ -46,9 +53,11 @@ class PaymentController extends Controller
             'payment_at' => $request->payment_at,
             'unique_id' => Helper::uniqStr(),
         ];
-
         $payment = payment::create($input);
-        return  $this->successResponse(new PaymentResource($payment));
+
+        StorePaymentEvent::dispatch($payment);
+
+        return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_created'), 201);
     }
 
     /**
@@ -56,7 +65,7 @@ class PaymentController extends Controller
      */
     public function show(payment $payment)
     {
-        return  $this->successResponse(new PaymentResource($payment));
+        return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_found'));
     }
 
     /**
@@ -78,20 +87,37 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function reject(UpdatepaymentRequest $request, payment $payment)
+    public function reject(payment $payment)
     {
-        try {
-            if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-                return response()->json('Cant set Rejected for status', 400);
-            }
-            $input = [
-                'status' => PaymentStatusEnum::Rejected
-            ];
-            $payment->update($input);
-            return  $this->successResponse($payment);
-        } catch (ModelNotFoundException $exception) {
-            return  $this->errorResponse(['error']);
+        if ($payment->status->value != PaymentStatusEnum::Pending->value) {
+            return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
         }
+        $input = [
+            'status' => PaymentStatusEnum::Rejected
+        ];
+        $payment->update($input);
+
+        RejectPaymentEvent::dispatch($payment);
+        // RejectPaymentEmail::dispatch($payment, $message);
+
+        return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
+    }
+
+    public function verify(payment $payment)
+    {
+
+        // if ($payment->status->value != PaymentStatusEnum::Pending->value) {
+        //     return  $this->errorResponse(['error'], __('payment.errors.you_can_only_verify_pending_payments'), 400);
+        // }
+        $input = [
+            'status' => PaymentStatusEnum::Verified
+        ];
+        $payment->update($input);
+
+        VerifyPaymentEvent::dispatch($payment);
+        // RejectPaymentEmail::dispatch($payment, $message);
+
+        return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_verified'));
     }
 
     /**

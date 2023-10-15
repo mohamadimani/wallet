@@ -87,7 +87,7 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function reject(UpdatepaymentRequest $request, payment $payment)
+    public function reject(payment $payment)
     {
         if ($payment->status->value != PaymentStatusEnum::Pending->value) {
             return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
@@ -103,12 +103,12 @@ class PaymentController extends Controller
         return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
     }
 
-    public function verified(UpdatepaymentRequest $request, payment $payment)
+    public function verify(payment $payment)
     {
 
-        if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-            return  $this->errorResponse(['error'], __('payment.errors.you_can_only_verify_pending_payments'), 400);
-        }
+        // if ($payment->status->value != PaymentStatusEnum::Pending->value) {
+        //     return  $this->errorResponse(['error'], __('payment.errors.you_can_only_verify_pending_payments'), 400);
+        // }
         $input = [
             'status' => PaymentStatusEnum::Verified
         ];

@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\transactios;
+use App\Models\transaction;
 use Illuminate\Auth\Access\Response;
 
-class TransactiosPolicy
+class transactionPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class TransactiosPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, transactios $transactios): bool
+    public function view(User $user, transaction $transaction): bool
     {
         //
     }
@@ -35,7 +35,7 @@ class TransactiosPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, transactios $transactios): bool
+    public function update(User $user, transaction $transaction): bool
     {
         //
     }
@@ -43,7 +43,7 @@ class TransactiosPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, transactios $transactios): bool
+    public function delete(User $user, transaction $transaction): bool
     {
         //
     }
@@ -51,7 +51,7 @@ class TransactiosPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, transactios $transactios): bool
+    public function restore(User $user, transaction $transaction): bool
     {
         //
     }
@@ -59,7 +59,7 @@ class TransactiosPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, transactios $transactios): bool
+    public function forceDelete(User $user, transaction $transaction): bool
     {
         //
     }

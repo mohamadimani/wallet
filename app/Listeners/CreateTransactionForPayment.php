@@ -33,8 +33,6 @@ class CreateTransactionForPayment
             'balance' => Transaction::query()->where('user_id', $event->payment->user_id)->sum('amount') + $event->payment->amount
         ]);
 
-        // transaction::where('id', $transaction->id)->decrement('balance', $event->payment->amount);
-
         $message = 'Transaction with ' . $event->payment->unique_id . ' key has been created';
         Mail::to('testreceiver@gmail.com')->send((new CreateTransaction($message))->onQueue('CreatePayment'));
     }

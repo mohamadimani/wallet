@@ -13,7 +13,8 @@ return [
     "validations" => [],
     "errors" => [
         "you_can_only_decline_pending_payments" => "You can only decline pending payments",
-        "you_can_only_verify_pending_payments" => "You can only verify pending payments"
+        "you_can_only_verify_pending_payments" => "You can only verify pending payments",
+        "try_again" => "Try again"
     ],
 
 ];

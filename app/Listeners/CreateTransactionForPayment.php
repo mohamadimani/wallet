@@ -33,7 +33,7 @@ class CreateTransactionForPayment
             'balance' => Transaction::query()->where('user_id', $event->payment->user_id)->sum('amount') + $event->payment->amount
         ]);
 
-        $message = 'Transaction with ' . $event->payment->unique_id . ' key has been created';
+        $message = __('transaction.messages.transaction_has_been_created', ['unique_id' => $event->payment->unique_id]);
         Mail::to('testreceiver@gmail.com')->send((new CreateTransaction($message))->onQueue('CreatePayment'));
     }
 }

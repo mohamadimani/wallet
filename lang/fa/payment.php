@@ -8,7 +8,10 @@ return [
         "payment_successfuly_created" => "پرداخت با موفقیت ایجاد شد",
         "payment_successfuly_found" => "پرداخت با موفقیت پیدا شد",
         "the_payment_was_successfully_rejected" => "پرداخت با موفقیت رد شد",
-        "the_payment_was_successfully_verified" => "پرداخت با موفقیت تایید شد"
+        "the_payment_was_successfully_verified" => "پرداخت با موفقیت تایید شد",
+        "payment_has_been_verified" => "پرداخت با  :unique_id کلید تایید شد",
+        "payment_has_been_created" => "پرداخت با  :unique_id کلید ایجاد شد",
+        "payment_has_been_rejected" => "پرداخت با  :unique_id کلید رد شد"
     ],
     "validations" => [],
     "errors" => [

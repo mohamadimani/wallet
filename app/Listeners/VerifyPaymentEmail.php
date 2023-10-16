@@ -24,7 +24,7 @@ class VerifyPaymentEmail
      */
     public function handle(VerifyPaymentEvent $event): void
     {
-        $message = 'Payment with ' . $event->payment->unique_id . ' key has been Verified';
+        $message = __('payment.messages.payment_has_been_verified', ['unique_id' => $event->payment->unique_id]);
         Mail::to('testreceiver@gmail.com')->send((new VerifyPayment($message))->onQueue('VerifyPayment'));
     }
 }

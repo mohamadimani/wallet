@@ -8,7 +8,10 @@ return [
         "payment_successfuly_created" => "Payment successfuly created",
         "payment_successfuly_found" => "Payment successfuly found",
         "the_payment_was_successfully_rejected" => "The payment was successfully rejected",
-        "the_payment_was_successfully_verified" => "The payment was successfully verified"
+        "the_payment_was_successfully_verified" => "The payment was successfully verified",
+        "payment_has_been_verified" => "Payment with :unique_id key has been Verified",
+        "payment_has_been_created" => "Payment with :unique_id key has been created",
+        "payment_has_been_rejected" => "Payment with :unique_id key has been rejected"
     ],
     "validations" => [],
     "errors" => [

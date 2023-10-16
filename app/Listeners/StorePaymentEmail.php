@@ -23,7 +23,7 @@ class StorePaymentEmail
      */
     public function handle(StorePaymentEvent $event): void
     {
-        $message = 'Your payment with ' . $event->payment->unique_id . ' key has been created! :)';
+        $message = __('payment.messages.payment_has_been_created', ['unique_id' => $event->payment->unique_id]);
         Mail::to('testreceiver@gmail.com')->send((new StorePayment($message))->onQueue('storePayment'));
     }
 }

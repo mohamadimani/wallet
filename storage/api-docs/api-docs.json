@@ -1,0 +1,255 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "L5 OpenApi",
+        "description": "L5 Swagger OpenApi description",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/payments": {
+            "get": {
+                "tags": [
+                    "PAYMENT"
+                ],
+                "summary": "Payment List",
+                "operationId": "PaymentIndex",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "202": {
+                        "description": "Successful operation"
+                    },
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "PAYMENT"
+                ],
+                "summary": "Payment Store",
+                "operationId": "PaymentStore",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "user_id",
+                                    "amount",
+                                    "currency",
+                                    "payment_at"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "text"
+                                    },
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "amount": {
+                                        "type": "text"
+                                    },
+                                    "currency": {
+                                        "type": "text"
+                                    },
+                                    "attach_file": {
+                                        "type": "text"
+                                    },
+                                    "payment_at": {
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "202": {
+                        "description": "Successful operation"
+                    },
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/{unique_id}": {
+            "get": {
+                "tags": [
+                    "PAYMENT"
+                ],
+                "summary": "GET Payment By UniqueId",
+                "operationId": "PaymentShow",
+                "parameters": [
+                    {
+                        "name": "unique_id",
+                        "in": "path",
+                        "description": "payment unique id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1234567890qwer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "202": {
+                        "description": "Successful operation"
+                    },
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/{unique_id}/reject": {
+            "patch": {
+                "tags": [
+                    "PAYMENT"
+                ],
+                "summary": "Payment Reject",
+                "operationId": "PaymentReject",
+                "parameters": [
+                    {
+                        "name": "unique_id",
+                        "in": "path",
+                        "description": "payment unique id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1234567890qwer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "202": {
+                        "description": "Successful operation"
+                    },
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/{unique_id}/verify": {
+            "patch": {
+                "tags": [
+                    "PAYMENT"
+                ],
+                "summary": "Payment Verify",
+                "operationId": "PaymentVerify",
+                "parameters": [
+                    {
+                        "name": "unique_id",
+                        "in": "path",
+                        "description": "payment unique id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1234567890qwer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "202": {
+                        "description": "Successful operation"
+                    },
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        }
+    }
+}

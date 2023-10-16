@@ -6,6 +6,7 @@ use App\Enums\PaymentStatusEnum;
 use App\Events\RejectPaymentEvent;
 use App\Events\StorePaymentEvent;
 use App\Events\VerifyPaymentEvent;
+use App\Exceptions\PaymentException;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\payment;
@@ -17,7 +18,10 @@ use App\Mail\RejectedPayment;
 use App\Mail\StorePayment;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class PaymentController extends Controller
 {
@@ -25,10 +29,15 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $payments = payment::all();
-        return  $this->successResponse(new PaymentCollection($payments), __('payment.messages.payment_list_found_successfully'), 200);
+        try {
+            $payments = payment::all();
+            $payments = payment::paginate($request->perpage ?? 10);
+            return  $this->successResponse(new PaymentCollection($payments), __('payment.messages.payment_list_found_successfully'), 200);
+        } catch (Throwable $e) {
+            throw new PaymentException(__('payment.errors.try_again'));
+        }
     }
 
     /**
@@ -44,20 +53,23 @@ class PaymentController extends Controller
      */
     public function store(StorepaymentRequest $request)
     {
-        $input = [
-            'title' => $request->title,
-            'user_id' => $request->user_id,
-            'amount' => $request->amount,
-            'currency' =>  $request->currency,
-            'attach_file' =>  $request->attach_file,
-            'payment_at' => $request->payment_at,
-            'unique_id' => Helper::uniqStr(),
-        ];
-        $payment = payment::create($input);
-
-        StorePaymentEvent::dispatch($payment);
-
-        return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_created'), 201);
+        try {
+            $input = [
+                'title' => $request->title,
+                'user_id' => $request->user_id,
+                'amount' => $request->amount,
+                'currency' =>  $request->currency,
+                'attach_file' =>  $request->attach_file,
+                'payment_at' => $request->payment_at,
+                'unique_id' => Helper::uniqStr(),
+            ];
+            $payment = payment::create($input);
+            StorePaymentEvent::dispatch($payment);
+            return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_created'), 201);
+        } catch (Throwable $e) {
+            throw new PaymentException(__('payment.errors.try_again'));
+            // return  $this->errorResponse(['error'], __('payment.errors.try_again'), 400);
+        }
     }
 
     /**
@@ -65,7 +77,12 @@ class PaymentController extends Controller
      */
     public function show(payment $payment)
     {
-        return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_found'));
+        try {
+            return  $this->successResponse(new PaymentResource($payment), __('payment.messages.payment_successfuly_found'));
+        } catch (Throwable $e) {
+            throw new PaymentException(__('payment.errors.try_again'));
+            // return  $this->errorResponse(['error'], __('payment.errors.try_again'), 400);
+        }
     }
 
     /**
@@ -89,35 +106,41 @@ class PaymentController extends Controller
      */
     public function reject(payment $payment)
     {
-        if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-            return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
+        try {
+            if ($payment->status->value != PaymentStatusEnum::Pending->value) {
+                return  $this->errorResponse(['error'], __('payment.errors.you_can_only_decline_pending_payments'), 400);
+            }
+            $input = [
+                'status' => PaymentStatusEnum::Rejected
+            ];
+            $payment->update($input);
+
+            RejectPaymentEvent::dispatch($payment);
+            return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
+        } catch (Throwable $e) {
+            throw new PaymentException(__('payment.errors.try_again'));
         }
-        $input = [
-            'status' => PaymentStatusEnum::Rejected
-        ];
-        $payment->update($input);
-
-        RejectPaymentEvent::dispatch($payment);
-        // RejectPaymentEmail::dispatch($payment, $message);
-
-        return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_rejected'));
     }
 
     public function verify(payment $payment)
     {
+        try {
 
-        // if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-        //     return  $this->errorResponse(['error'], __('payment.errors.you_can_only_verify_pending_payments'), 400);
-        // }
-        $input = [
-            'status' => PaymentStatusEnum::Verified
-        ];
-        $payment->update($input);
+            if ($payment->status->value != PaymentStatusEnum::Pending->value) {
+                return  $this->errorResponse(['error'], __('payment.errors.you_can_only_verify_pending_payments'), 400);
+            }
+            $input = [
+                'status' => PaymentStatusEnum::Verified
+            ];
+            $payment->update($input);
 
-        VerifyPaymentEvent::dispatch($payment);
-        // RejectPaymentEmail::dispatch($payment, $message);
+            VerifyPaymentEvent::dispatch($payment);
+            // RejectPaymentEmail::dispatch($payment, $message);
 
-        return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_verified'));
+            return  $this->successResponse($payment, __('payment.messages.the_payment_was_successfully_verified'));
+        } catch (Throwable $e) {
+            throw new PaymentException(__('payment.errors.try_again'));
+        }
     }
 
     /**

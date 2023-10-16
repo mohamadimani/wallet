@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoretransactiosRequest;
-use App\Http\Requests\UpdatetransactiosRequest;
-use App\Models\transactios;
+use App\Http\Requests\StoreTransactionRequest;
+use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\Transaction;
 
-class TransactiosController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class TransactiosController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoretransactiosRequest $request)
+    public function store(StoreTransactionRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class TransactiosController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(transactios $transactios)
+    public function show(Transaction $Transaction)
     {
         //
     }
@@ -43,7 +43,7 @@ class TransactiosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(transactios $transactios)
+    public function edit(Transaction $Transaction)
     {
         //
     }
@@ -51,7 +51,7 @@ class TransactiosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatetransactiosRequest $request, transactios $transactios)
+    public function update(UpdateTransactionRequest $request, Transaction $Transaction)
     {
         //
     }
@@ -59,7 +59,7 @@ class TransactiosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(transactios $transactios)
+    public function destroy(Transaction $Transaction)
     {
         //
     }

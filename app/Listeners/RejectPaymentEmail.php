@@ -23,7 +23,7 @@ class RejectPaymentEmail
      */
     public function handle(RejectPaymentEvent $event): void
     {
-        $message = 'payment with ' . $event->payment->unique_id . ' key has been rejected';
+        $message = __('payment.messages.payment.messages.payment_has_been_rejected', ['unique_id' => $event->payment->unique_id]);
         Mail::to('testreceiver@gmail.com')->send((new RejectedPayment($message))->onQueue('rejectPayment'));
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoretransactionRequest;
-use App\Http\Requests\UpdatetransactionRequest;
-use App\Models\transaction;
+use App\Http\Requests\StoreTransactionRequest;
+use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\Transaction;
 
-class transactionController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class transactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoretransactionRequest $request)
+    public function store(StoreTransactionRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class transactionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(transaction $transaction)
+    public function show(Transaction $Transaction)
     {
         //
     }
@@ -43,7 +43,7 @@ class transactionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(transaction $transaction)
+    public function edit(Transaction $Transaction)
     {
         //
     }
@@ -51,7 +51,7 @@ class transactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatetransactionRequest $request, transaction $transaction)
+    public function update(UpdateTransactionRequest $request, Transaction $Transaction)
     {
         //
     }
@@ -59,7 +59,7 @@ class transactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(transaction $transaction)
+    public function destroy(Transaction $Transaction)
     {
         //
     }

@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use App\Events\VerifyPaymentEvent;
 use App\Mail\VerifyPayment;
-use App\Models\transaction;
+use App\Models\Transaction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;

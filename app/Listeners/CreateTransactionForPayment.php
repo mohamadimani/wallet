@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use App\Events\VerifyPaymentEvent;
 use App\Mail\CreateTransaction;
-use App\Models\transaction;
+use App\Models\Transaction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -24,7 +24,7 @@ class CreateTransactionForPayment
      */
     public function handle(VerifyPaymentEvent $event): void
     {
-        $transaction = transaction::create([
+        $Transaction = Transaction::create([
             'user_id' => $event->payment->user_id,
             'payment_id' => $event->payment->id,
             'amount' => $event->payment->amount,
@@ -33,7 +33,7 @@ class CreateTransactionForPayment
             'balance' => Transaction::query()->where('user_id', $event->payment->user_id)->sum('amount') + $event->payment->amount
         ]);
 
-        $message = __('transaction.messages.transaction_has_been_created', ['unique_id' => $event->payment->unique_id]);
+        $message = __('Transaction.messages.Transaction_has_been_created', ['unique_id' => $event->payment->unique_id]);
         Mail::to('testreceiver@gmail.com')->send((new CreateTransaction($message))->onQueue('CreatePayment'));
     }
 }

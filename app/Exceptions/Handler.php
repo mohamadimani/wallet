@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Facades\ApiResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -23,8 +26,16 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof BadRequestHttpException) {
+            return ApiResponse::message($exception->getMessage())
+                ->status(Response::HTTP_BAD_REQUEST)
+                ->send();
+        }
+
+        return parent::render($request, $exception);
     }
 }

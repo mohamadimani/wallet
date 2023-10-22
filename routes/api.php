@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,8 @@ Route::group(['prefix' => 'v1'], function () use ($router) {
     $router->get('payments', [PaymentController::class, 'index']);
     $router->patch('payments/{payment:unique_id}/reject', [PaymentController::class, 'reject']);
     $router->patch('payments/{payment:unique_id}/verify', [PaymentController::class, 'verify']);
+
+    $router->post('currencies', [CurrencyController::class, 'store']);
+    $router->get('currencies/{currency}', [CurrencyController::class, 'show']);
+    $router->get('currencies', [CurrencyController::class, 'index']);
 });

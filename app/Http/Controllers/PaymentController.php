@@ -126,7 +126,7 @@ class PaymentController extends Controller
     public function verify(payment $payment)
     {
         if ($payment->status->value != PaymentStatusEnum::Pending->value) {
-            // throw new BadRequestHttpException(__('payment.errors.you_can_only_verify_pending_payments'));
+            throw new BadRequestHttpException(__('payment.errors.you_can_only_verify_pending_payments'));
         }
 
         $input = [

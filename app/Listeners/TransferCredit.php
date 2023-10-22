@@ -6,6 +6,7 @@ use App\Events\StoreTransferEvent;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
 
 class TransferCredit
 {
@@ -22,7 +23,39 @@ class TransferCredit
      */
     public function handle(StoreTransferEvent $event): void
     {
-        User::where('id', $event->transfer->from_account)->decrement('balance', $event->transfer->amount);
-        User::where('id', $event->transfer->to_account)->increment('balance', $event->transfer->amount);
+
+        DB::beginTransaction();
+
+        $fromUser = User::findOrFail($event->transfer->from_account);
+        $balace = json_decode($fromUser->balance);
+        if (isset($balace->{$event->transfer->currency}) and $balace->{$event->transfer->currency} >= $event->transfer->amount) {
+            $balace->{$event->transfer->currency} -= $event->transfer->amount;
+        } else {
+            $balace = [$event->transfer->currency => $event->transfer->amount];
+        }
+        $fromUser->update([
+            'balance' => json_encode($balace)
+        ]);
+
+
+        $toUser = User::findOrFail($event->transfer->to_account);
+        $balace = json_decode($toUser->balance);
+        if (isset($balace->{$event->transfer->currency})) {
+            $balace->{$event->transfer->currency} += $event->transfer->amount;
+        } else {
+            $balace = [$event->transfer->currency => $event->transfer->amount];
+        }
+        $toUserStatus = $toUser->update([
+            'balance' => json_encode($balace)
+        ]);
+
+        if (!$toUserStatus) {
+            DB::rollBack();
+        }
+
+        DB::commit();
+
+        // User::where('id', $event->transfer->from_account)->decrement('balance', $event->transfer->amount);
+        // User::where('id', $event->transfer->to_account)->increment('balance', $event->transfer->amount);
     }
 }

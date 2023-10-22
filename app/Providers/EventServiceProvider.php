@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Events\RejectPaymentEvent;
 use App\Events\StorePaymentEvent;
+use App\Events\StoreTransferEvent;
 use App\Events\VerifyPaymentEvent;
 use App\Listeners\CreateTransactionForPayment;
 use App\Listeners\RejectPaymentEmail;
 use App\Listeners\StorePaymentEmail;
+use App\Listeners\TransferCredit;
 use App\Listeners\VerifyPaymentEmail;
 use App\Mail\CreateTransaction;
 use Illuminate\Auth\Events\Registered;
@@ -35,6 +37,9 @@ class EventServiceProvider extends ServiceProvider
         VerifyPaymentEvent::class => [
             VerifyPaymentEmail::class,
             CreateTransactionForPayment::class,
+        ],
+        StoreTransferEvent::class => [
+            TransferCredit::class,
         ],
     ];
 

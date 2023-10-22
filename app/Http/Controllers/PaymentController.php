@@ -111,7 +111,8 @@ class PaymentController extends Controller
         }
 
         $input = [
-            'status' => PaymentStatusEnum::Rejected
+            'status' => PaymentStatusEnum::Rejected,
+            'rejected_at' => time()
         ];
         $payment->update($input);
 
@@ -119,7 +120,7 @@ class PaymentController extends Controller
 
         return ApiResponse::message(__('payment.messages.the_payment_was_successfully_rejected'))
             ->data($payment)
-            ->status()
+            ->status(200)
             ->send();
     }
 
@@ -130,7 +131,8 @@ class PaymentController extends Controller
         }
 
         $input = [
-            'status' => PaymentStatusEnum::Verified
+            'status' => PaymentStatusEnum::Verified,
+            'verified_at' => time()
         ];
         $payment->update($input);
 

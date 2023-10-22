@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
 use App\Models\Currency;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CurrencyController extends Controller
 {
@@ -84,5 +85,39 @@ class CurrencyController extends Controller
     public function destroy(Currency $currency)
     {
         //
+    }
+
+    public function inActive(Currency $currency)
+    {
+        if (!$currency->is_active) {
+            throw new BadRequestHttpException(__('currency.errors.you_can_only_decline_active_currencies'));
+        }
+        $input = [
+            'is_active' => false
+        ];
+        $currency->update($input);
+        // RejectCurrencyEvent::dispatch($currency);
+
+        return ApiResponse::message(__('currency.messages.currency_successfuly_inactivated'))
+            ->data($currency)
+            ->status(200)
+            ->send();
+    }
+
+    public function active(Currency $currency)
+    {
+        if ($currency->is_active) {
+            throw new BadRequestHttpException(__('currency.errors.you_can_only_verify_inactive_currencies'));
+        }
+        $input = [
+            'is_active' => true
+        ];
+        $currency->update($input);
+        // VerifyCurrencyEvent::dispatch($currency);
+
+        return ApiResponse::message(__('currency.messages.currency_successfuly_activated'))
+            ->data($currency)
+            ->status(200)
+            ->send();
     }
 }

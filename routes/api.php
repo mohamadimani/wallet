@@ -31,4 +31,6 @@ Route::group(['prefix' => 'v1'], function () use ($router) {
     $router->post('currencies', [CurrencyController::class, 'store']);
     $router->get('currencies/{currency}', [CurrencyController::class, 'show']);
     $router->get('currencies', [CurrencyController::class, 'index']);
+    $router->patch('currencies/{currency}/active', [CurrencyController::class, 'active']);
+    $router->patch('currencies/{currency}/inactive', [CurrencyController::class, 'inActive']);
 });

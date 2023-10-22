@@ -12,7 +12,9 @@ return [
     ],
     "validations" => [],
     "errors" => [
-        "try_again" => "Try again"
+        "try_again" => "Try again",
+        "you_can_only_decline_active_currencies" => "you can only decline active currencies",
+        "you_can_only_verify_inactive_currencies" => "you can only verify inactive currencies"
     ],
 
 ];

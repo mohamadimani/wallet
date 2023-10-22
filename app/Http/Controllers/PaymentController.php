@@ -119,7 +119,7 @@ class PaymentController extends Controller
 
         return ApiResponse::message(__('payment.messages.the_payment_was_successfully_rejected'))
             ->data($payment)
-            ->status()
+            ->status(200)
             ->send();
     }
 

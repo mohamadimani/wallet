@@ -26,25 +26,38 @@ class TransferCredit
 
         DB::beginTransaction();
 
-        $fromUser = User::findOrFail($event->transfer->from_account);
+        $fromUser = DB::table('users')
+            ->where('id', $event->transfer->from_account)
+            ->lockForUpdate()
+            ->first();
+
         $balace = json_decode($fromUser->balance);
         if (isset($balace->{$event->transfer->currency}) and $balace->{$event->transfer->currency} >= $event->transfer->amount) {
             $balace->{$event->transfer->currency} -= $event->transfer->amount;
         } else {
             $balace = [$event->transfer->currency => $event->transfer->amount];
         }
+
+        $fromUser = DB::table('users')
+            ->where('id', $event->transfer->from_account);
         $fromUser->update([
             'balance' => json_encode($balace)
         ]);
 
 
-        $toUser = User::findOrFail($event->transfer->to_account);
+        $toUser = DB::table('users')
+            ->where('id', $event->transfer->to_account)
+            ->lockForUpdate()
+            ->first();
+        //  User::findOrFail($event->transfer->to_account)->lockForUpdate();
         $balace = json_decode($toUser->balance);
         if (isset($balace->{$event->transfer->currency})) {
             $balace->{$event->transfer->currency} += $event->transfer->amount;
         } else {
             $balace = [$event->transfer->currency => $event->transfer->amount];
         }
+        $toUser = DB::table('users')
+            ->where('id', $event->transfer->to_account);
         $toUserStatus = $toUser->update([
             'balance' => json_encode($balace)
         ]);

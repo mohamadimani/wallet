@@ -111,7 +111,8 @@ class PaymentController extends Controller
         }
 
         $input = [
-            'status' => PaymentStatusEnum::Rejected
+            'status' => PaymentStatusEnum::Rejected,
+            'rejected_at' => time()
         ];
         $payment->update($input);
 
@@ -130,7 +131,8 @@ class PaymentController extends Controller
         }
 
         $input = [
-            'status' => PaymentStatusEnum::Verified
+            'status' => PaymentStatusEnum::Verified,
+            'verified_at' => time()
         ];
         $payment->update($input);
 

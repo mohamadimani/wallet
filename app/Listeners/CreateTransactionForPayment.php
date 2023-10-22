@@ -35,9 +35,8 @@ class CreateTransactionForPayment
         ]);
 
         $user = User::findOrFail($event->payment->user_id);
-
         $user->update([
-            'balance' => json_encode([$event->payment->currency => Transaction::query()->where('user_id', $event->payment->user_id)->sum('amount') ])
+            'balance' => Transaction::query()->where('user_id', $event->payment->user_id)->sum('amount')
         ]);
 
         $message = __('Transaction.messages.Transaction_has_been_created', ['unique_id' => $event->payment->unique_id]);

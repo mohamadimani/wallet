@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\TransferController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +34,6 @@ Route::group(['prefix' => 'v1'], function () use ($router) {
     $router->get('currencies', [CurrencyController::class, 'index']);
     $router->patch('currencies/{currency}/active', [CurrencyController::class, 'active']);
     $router->patch('currencies/{currency}/inactive', [CurrencyController::class, 'inActive']);
+
+    $router->post('transfers', [TransferController::class, 'store']);
 });

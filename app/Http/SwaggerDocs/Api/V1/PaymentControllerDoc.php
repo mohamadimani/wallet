@@ -32,10 +32,6 @@ class PaymentControllerDoc
     {
     }
 
-    public function create()
-    {
-    }
-
 
     /**
      * @OA\Post(
@@ -103,15 +99,6 @@ class PaymentControllerDoc
     {
     }
 
-    public function edit(payment $payment)
-    {
-    }
-
-    public function update(UpdatepaymentRequest $request, payment $payment)
-    {
-    }
-
-
     /**
      * @OA\Patch(
      *     path="/api/v1/payments/{unique_id}/reject",
@@ -175,7 +162,4 @@ class PaymentControllerDoc
     {
     }
 
-    public function destroy(payment $payment)
-    {
-    }
 }

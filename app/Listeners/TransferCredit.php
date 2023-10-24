@@ -49,7 +49,7 @@ class TransferCredit
             ->where('id', $event->transfer->to_account)
             ->lockForUpdate()
             ->first();
-        //  User::findOrFail($event->transfer->to_account)->lockForUpdate();
+
         $balace = json_decode($toUser->balance);
         if (isset($balace->{$event->transfer->currency})) {
             $balace->{$event->transfer->currency} += $event->transfer->amount;
@@ -68,7 +68,5 @@ class TransferCredit
 
         DB::commit();
 
-        // User::where('id', $event->transfer->from_account)->decrement('balance', $event->transfer->amount);
-        // User::where('id', $event->transfer->to_account)->increment('balance', $event->transfer->amount);
     }
 }

@@ -19,10 +19,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () use ($router) {
     $router->post('payments', [PaymentController::class, 'store']);
-    $router->get('payments/{payment:unique_id}', [PaymentController::class, 'show']);
+    $router->get('payments/{payment}', [PaymentController::class, 'show']);
     $router->get('payments', [PaymentController::class, 'index']);
-    $router->patch('payments/{payment:unique_id}/reject', [PaymentController::class, 'reject']);
-    $router->patch('payments/{payment:unique_id}/verify', [PaymentController::class, 'verify']);
+    $router->patch('payments/{payment}/reject', [PaymentController::class, 'reject']);
+    $router->patch('payments/{payment}/verify', [PaymentController::class, 'verify']);
 
     $router->post('currencies', [CurrencyController::class, 'store']);
     $router->get('currencies/{currency}', [CurrencyController::class, 'show']);

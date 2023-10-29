@@ -36,7 +36,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         VerifyPaymentEvent::class => [
             VerifyPaymentEmail::class,
-            CreateTransactionForPayment::class,
         ],
         StoreTransferEvent::class => [
             TransferCredit::class,

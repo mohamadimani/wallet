@@ -17,6 +17,7 @@ return [
     "errors" => [
         "you_can_only_decline_pending_payments" => "You can only decline pending payments",
         "you_can_only_verify_pending_payments" => "You can only verify pending payments",
+        "you_can_create_same_paymant_after_5_minutes" => "You can create same payments after 5 minutes",
         "try_again" => "Try again"
     ],
 

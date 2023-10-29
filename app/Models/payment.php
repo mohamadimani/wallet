@@ -28,4 +28,9 @@ class payment extends Model
     protected $casts = [
         'status' => PaymentStatusEnum::class
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'unique_id';
+    }
 }

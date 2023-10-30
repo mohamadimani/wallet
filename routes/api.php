@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\TransferController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

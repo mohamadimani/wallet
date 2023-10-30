@@ -23,6 +23,7 @@ Route::group(['prefix' => 'v1'], function () use ($router) {
     $router->get('payments', [PaymentController::class, 'index']);
     $router->patch('payments/{payment}/reject', [PaymentController::class, 'reject']);
     $router->patch('payments/{payment}/verify', [PaymentController::class, 'verify']);
+    $router->delete('payments/{payment}/destroy', [PaymentController::class, 'destroy']);
 
     $router->post('currencies', [CurrencyController::class, 'store']);
     $router->get('currencies/{currency}', [CurrencyController::class, 'show']);

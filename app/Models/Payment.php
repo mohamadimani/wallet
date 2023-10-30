@@ -8,7 +8,7 @@ use App\Enums\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Type\Integer;
 
-class payment extends Model
+class Payment extends Model
 {
     use HasFactory;
     use SoftDeletes;

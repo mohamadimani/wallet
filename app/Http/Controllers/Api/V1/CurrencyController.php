@@ -12,12 +12,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CurrencyController extends Controller
 {
+    // TODO validation for all and resource
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $currencies = Currency::all();
         $currencies = Currency::paginate($request->perpage ?? 10);
 
         return ApiResponse::message(__('currency.messages.currency_list_found_successfully'))
@@ -39,13 +39,12 @@ class CurrencyController extends Controller
      */
     public function store(StoreCurrencyRequest $request)
     {
-        $input = [
+        //TODO iso_code and add key
+        $currency = Currency::create([
             'name' => $request->name,
-            'code' => $request->code,
+            'iso_code' => $request->code,
             'symbol' => $request->symbol,
-        ];
-        $currency = Currency::create($input);
-        // StoreCurrencyEvent::dispatch($currency);
+        ]);
 
         return ApiResponse::message(__('currency.messages.currency_successfuly_created'))
             ->data($currency)
@@ -93,11 +92,9 @@ class CurrencyController extends Controller
         if (!$currency->is_active) {
             throw new BadRequestHttpException(__('currency.errors.you_can_only_decline_active_currencies'));
         }
-        $input = [
+        $currency->update([
             'is_active' => false
-        ];
-        $currency->update($input);
-        // RejectCurrencyEvent::dispatch($currency);
+        ]);
 
         return ApiResponse::message(__('currency.messages.currency_successfuly_inactivated'))
             ->data($currency)
@@ -110,11 +107,9 @@ class CurrencyController extends Controller
         if ($currency->is_active) {
             throw new BadRequestHttpException(__('currency.errors.you_can_only_verify_inactive_currencies'));
         }
-        $input = [
+        $currency->update([
             'is_active' => true
-        ];
-        $currency->update($input);
-        // VerifyCurrencyEvent::dispatch($currency);
+        ]);
 
         return ApiResponse::message(__('currency.messages.currency_successfuly_activated'))
             ->data($currency)

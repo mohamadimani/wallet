@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatepaymentRequest extends FormRequest
+class StorePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,8 +21,10 @@ class UpdatepaymentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        $validate = [
+            'title' => ['required'],
         ];
+
+        return $validate;
     }
 }

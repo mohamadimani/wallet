@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\RejectedPayment;
-use App\Models\payment;
+use App\Models\Payment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -2,13 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\StorePaymentEvent;
+use App\Events\PaymentStored;
 use App\Mail\StorePayment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class StorePaymentEmail
+class PaymentStoreEmail
 {
     /**
      * Create the event listener.
@@ -21,7 +21,7 @@ class StorePaymentEmail
     /**
      * Handle the event.
      */
-    public function handle(StorePaymentEvent $event): void
+    public function handle(PaymentStored $event): void
     {
         $message = __('payment.messages.payment_has_been_created', ['unique_id' => $event->payment->unique_id]);
         Mail::to('testreceiver@gmail.com')->send((new StorePayment($message))->onQueue('storePayment'));

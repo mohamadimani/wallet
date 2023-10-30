@@ -8,7 +8,6 @@ use App\Events\PaymentRejected;
 use App\Events\PaymentVerified;
 use App\Facades\ApiResponse;
 use App\Http\Requests\StorePaymentRequest;
-use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\Payment;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;

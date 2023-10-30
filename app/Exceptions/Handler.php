@@ -6,6 +6,7 @@ use App\Facades\ApiResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -33,6 +34,10 @@ class Handler extends ExceptionHandler
         if ($exception instanceof BadRequestHttpException) {
             return ApiResponse::message($exception->getMessage())
                 ->status(Response::HTTP_BAD_REQUEST)
+                ->send();
+        } elseif ($exception instanceof UnauthorizedHttpException) {
+            return ApiResponse::message($exception->getMessage())
+                ->status(Response::HTTP_UNAUTHORIZED)
                 ->send();
         }
 

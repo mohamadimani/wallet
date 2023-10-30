@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\TransferController;
+use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,19 +17,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'v1'], function () use ($router) {
-    $router->post('payments', [PaymentController::class, 'store']);
-    $router->get('payments/{payment}', [PaymentController::class, 'show']);
-    $router->get('payments', [PaymentController::class, 'index']);
-    $router->patch('payments/{payment}/reject', [PaymentController::class, 'reject']);
-    $router->patch('payments/{payment}/verify', [PaymentController::class, 'verify']);
-    $router->delete('payments/{payment}/destroy', [PaymentController::class, 'destroy']);
+Route::prefix('v1')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
 
-    $router->post('currencies', [CurrencyController::class, 'store']);
-    $router->get('currencies/{currency}', [CurrencyController::class, 'show']);
-    $router->get('currencies', [CurrencyController::class, 'index']);
-    $router->patch('currencies/{currency}/active', [CurrencyController::class, 'active']);
-    $router->patch('currencies/{currency}/inactive', [CurrencyController::class, 'inActive']);
+    Route::middleware('auth:api')->group(function () {
+        Route::post('payments', [PaymentController::class, 'store']);
+        Route::get('payments/{payment}', [PaymentController::class, 'show']);
+        Route::get('payments', [PaymentController::class, 'index']);
+        Route::patch('payments/{payment}/reject', [PaymentController::class, 'reject']);
+        Route::patch('payments/{payment}/verify', [PaymentController::class, 'verify']);
+        Route::delete('payments/{payment}/destroy', [PaymentController::class, 'destroy']);
 
-    $router->post('transfers', [TransferController::class, 'store']);
+        Route::post('currencies', [CurrencyController::class, 'store']);
+        Route::get('currencies/{currency}', [CurrencyController::class, 'show']);
+        Route::get('currencies', [CurrencyController::class, 'index']);
+        Route::patch('currencies/{currency}/active', [CurrencyController::class, 'active']);
+        Route::patch('currencies/{currency}/inactive', [CurrencyController::class, 'inActive']);
+
+        Route::post('transfers', [TransferController::class, 'store']);
+    });
 });

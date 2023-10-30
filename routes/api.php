@@ -23,6 +23,7 @@ Route::prefix('v1')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::middleware('auth:api')->group(function () {
+        
         Route::post('payments', [PaymentController::class, 'store']);
         Route::get('payments/{payment}', [PaymentController::class, 'show']);
         Route::get('payments', [PaymentController::class, 'index']);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Events\StoreTransferEvent;
 use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTransferRequest;
@@ -32,15 +31,13 @@ class TransferController extends Controller
      */
     public function store(StoreTransferRequest $request)
     {
-        $input = [
+        $transfer = Transfer::create([
             'from_account' => $request->from_account,
             'to_account' => $request->to_account,
             'amount' => $request->amount,
             'currency' => $request->currency,
             'created_by' => $request->created_by,
-        ];
-        $transfer = Transfer::create($input);
-        StoreTransferEvent::dispatch($transfer);
+        ]);
 
         return ApiResponse::message(__('transfer.messages.transfer_successfuly_created'))
             ->data($transfer)

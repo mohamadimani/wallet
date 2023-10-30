@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Mail\StorePayment;
+use App\Mail\RejectedPayment;
 use App\Models\Payment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class StorePaymentEvent
+class PaymentRejected
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

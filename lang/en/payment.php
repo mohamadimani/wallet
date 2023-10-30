@@ -7,6 +7,7 @@ return [
         "payment_list_found_successfully" => "Payment list found successfully",
         "payment_successfuly_created" => "Payment successfuly created",
         "payment_successfuly_found" => "Payment successfuly found",
+        "payment_successfuly_deleted" => "Payment successfuly deleted",
         "the_payment_was_successfully_rejected" => "The payment was successfully rejected",
         "the_payment_was_successfully_verified" => "The payment was successfully verified",
         "payment_has_been_verified" => "Payment with :unique_id key has been Verified",

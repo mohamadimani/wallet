@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\TransferStored;
 use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTransferRequest;
@@ -38,6 +39,7 @@ class TransferController extends Controller
             'currency' => $request->currency,
             'created_by' => $request->created_by,
         ]);
+        TransferStored::dispatch($transfer);
 
         return ApiResponse::message(__('transfer.messages.transfer_successfuly_created'))
             ->data($transfer)

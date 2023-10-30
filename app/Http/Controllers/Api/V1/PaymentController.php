@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\PaymentStatusEnum;
-use App\Events\IndexPaymentEvent;
-use App\Events\RejectPaymentEvent;
-use App\Events\ShowPaymentEvent;
-use App\Events\StorePaymentEvent;
-use App\Events\VerifyPaymentEvent;
+use App\Events\PaymentStored;
+use App\Events\PaymentRejected;
+use App\Events\PaymentVerified;
 use App\Facades\ApiResponse;
-use App\Http\Requests\StorepaymentRequest;
-use App\Http\Requests\UpdatepaymentRequest;
-use App\Models\payment;
+use App\Http\Requests\StorePaymentRequest;
+use App\Http\Requests\UpdatePaymentRequest;
+use App\Models\Payment;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
@@ -21,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+//TODO validations for all
 class PaymentController extends Controller
 {
     /**
@@ -28,10 +27,7 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
-        $payments = payment::all();
-        $payments = payment::paginate($request->perpage ?? 10);
-
-        IndexPaymentEvent::dispatch($payments);
+        $payments = Payment::paginate($request->perpage ?? 10);
 
         return ApiResponse::message(__('payment.messages.payment_list_found_successfully'))
             ->data($payments)
@@ -50,13 +46,22 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorepaymentRequest $request)
+    public function store(StorePaymentRequest $request)
     {
-        $lastSamePayment = payment::where([['user_id', $request->user_id], ['amount', $request->amount], ['created_at', '>', Carbon::now()->subMinutes(5)]])->first();
+        // TODO change 5 min to param
+
+        $lastSamePayment = Payment::where([
+            ['user_id', $request->user_id],
+            ['amount', $request->amount],
+            ['created_at', '>', Carbon::now()->subMinutes(5)]
+        ])->first();
+
         if ($lastSamePayment) {
             throw new BadRequestHttpException(__('payment.errors.you_can_create_same_paymant_after_5_minutes'));
         }
-        $input = [
+        //TODO change currency to KEY
+
+        $payment = Payment::create([
             'title' => $request->title,
             'user_id' => $request->user_id,
             'amount' => $request->amount,
@@ -64,11 +69,11 @@ class PaymentController extends Controller
             'attach_file' =>  $request->attach_file,
             'payment_at' => $request->payment_at,
             'unique_id' => Helper::uniqStr(),
-        ];
-        $payment = payment::create($input);
+        ]);
 
-        StorePaymentEvent::dispatch($payment);
+        PaymentStored::dispatch($payment);
 
+        //TODO resource for return data in all
         return ApiResponse::message(__('payment.messages.payment_successfuly_created'))
             ->data($payment)
             ->status(201)
@@ -78,10 +83,8 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(payment $payment)
+    public function show(Payment $payment)
     {
-        ShowPaymentEvent::dispatch($payment);
-
         return ApiResponse::message(__('payment.messages.payment_successfuly_found'))
             ->data($payment)
             ->status(200)
@@ -91,36 +94,39 @@ class PaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(payment $payment)
+    public function edit(Payment $payment)
     {
         //
     }
 
     /**
-     * Update the specified resource in storage.
+     * destroy the specified resource in storage.
      */
-    public function update(UpdatepaymentRequest $request, payment $payment)
+    public function destroy(Payment $payment)
     {
-        //
+        $payment->delete();
+
+        return ApiResponse::message(__('payment.messages.payment_successfuly_deleted'))
+            ->data($payment)
+            ->status(200)
+            ->send();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function reject(payment $payment)
+    public function reject(Payment $payment)
     {
-
         if ($payment->status->value != PaymentStatusEnum::Pending->value) {
             throw new BadRequestHttpException(__('payment.errors.you_can_only_decline_pending_payments'));
         }
 
-        $input = [
+        $payment->update([
             'status' => PaymentStatusEnum::Rejected,
             'rejected_at' => time()
-        ];
-        $payment->update($input);
+        ]);
 
-        RejectPaymentEvent::dispatch($payment);
+        PaymentRejected::dispatch($payment);
 
         return ApiResponse::message(__('payment.messages.the_payment_was_successfully_rejected'))
             ->data($payment)
@@ -128,42 +134,43 @@ class PaymentController extends Controller
             ->send();
     }
 
-    public function verify(payment $payment)
+    public function verify(Payment $payment)
     {
         if ($payment->status->value != PaymentStatusEnum::Pending->value) {
             throw new BadRequestHttpException(__('payment.errors.you_can_only_verify_pending_payments'));
         }
-
+        //TODO check for rollback amount
+        //TODO relation of models
         DB::beginTransaction();
 
         $payment->lockForUpdate();
-        $input = [
+        $payment->update([
             'status' => PaymentStatusEnum::Verified,
             'verified_at' => time()
-        ];
-        $payment->update($input);
+        ]);
 
-        $Transaction = Transaction::create([
+        Transaction::create([
             'user_id' => $payment->user_id,
             'payment_id' => $payment->id,
             'amount' => $payment->amount,
             'currency' => $payment->currency,
-            'unique_id' => $payment->unique_id,
             'balance' => Transaction::query()->where('user_id', $payment->user_id)->sum('amount') + $payment->amount
         ]);
 
         $user = User::findOrFail($payment->user_id);
-        $user->lockForUpdate();
-        $user->update([
-            'balance' => json_encode([$payment->currency => Transaction::query()->where('user_id', $payment->user_id)->sum('amount')])
+
+        //TODO change condition with ali function
+        $userUpdatedStatus = $user->update([
+            "balance->{$payment->currency}" =>   Transaction::query()->where('user_id', $payment->user_id)->sum('amount')
         ]);
 
-        if (!$user) {
+        if ($userUpdatedStatus) {
+            DB::commit();
+        } else {
             DB::rollBack();
         }
-        DB::commit();
 
-        VerifyPaymentEvent::dispatch($payment);
+        PaymentVerified::dispatch($payment);
 
         return ApiResponse::message(__('payment.messages.the_payment_was_successfully_verified'))
             ->data($payment)

@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\PaymentRejected;
 use App\Events\RejectPaymentEvent;
-use App\Events\StorePaymentEvent;
+use App\Events\PaymentStored;
+use App\Events\PaymentVerified;
 use App\Events\StoreTransferEvent;
-use App\Events\VerifyPaymentEvent;
 use App\Listeners\CreateTransactionForPayment;
+use App\Listeners\PaymentRejectEmail;
+use App\Listeners\PaymentStoreEmail;
+use App\Listeners\PaymentVerifyEmail;
 use App\Listeners\RejectPaymentEmail;
 use App\Listeners\StorePaymentEmail;
 use App\Listeners\TransferCredit;
@@ -28,16 +32,16 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        RejectPaymentEvent::class => [
-            RejectPaymentEmail::class,
+        PaymentRejected::class => [
+            PaymentRejectEmail::class,
         ],
-        StorePaymentEvent::class => [
-            StorePaymentEmail::class,
+        PaymentStored::class => [
+            PaymentStoreEmail::class,
         ],
-        VerifyPaymentEvent::class => [
-            VerifyPaymentEmail::class,
+        PaymentVerified::class => [
+            PaymentVerifyEmail::class,
         ],
-        StoreTransferEvent::class => [
+        TransactionStore::class => [
             TransferCredit::class,
         ],
     ];

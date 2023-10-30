@@ -2,9 +2,9 @@
 
 namespace App\Http\SwaggerDocs\Api\V1;
 
-use App\Http\Requests\StorepaymentRequest;
-use App\Http\Requests\UpdatepaymentRequest;
-use App\Models\payment;
+use App\Http\Requests\StorePaymentRequest;
+use App\Http\Requests\UpdatePaymentRequest;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class PaymentControllerDoc
@@ -63,7 +63,7 @@ class PaymentControllerDoc
      *     @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function store(StorepaymentRequest $request)
+    public function store(StorePaymentRequest $request)
     {
     }
 
@@ -95,7 +95,7 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function show(payment $payment)
+    public function show(Payment $payment)
     {
     }
 
@@ -126,7 +126,7 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function reject(payment $payment)
+    public function reject(Payment $payment)
     {
     }
 
@@ -158,7 +158,7 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function verify(payment $payment)
+    public function verify(Payment $payment)
     {
     }
 

@@ -24,7 +24,7 @@ class TransferController extends Controller
      */
     public function create()
     {
-        //TODO list
+        //
     }
 
     /**

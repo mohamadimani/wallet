@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use App\Mail\RejectedPayment;
-use App\Models\payment;
+use App\Models\Payment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -20,7 +20,7 @@ class RejectPaymentEvent
     /**
      * Create a new event instance.
      */
-    public function __construct(public payment $payment)
+    public function __construct(public Payment $payment)
     {
         //
     }

@@ -138,7 +138,6 @@ class PaymentController extends Controller
         if ($payment->status->value != PaymentStatusEnum::Pending->value) {
             throw new BadRequestHttpException(__('payment.errors.you_can_only_verify_pending_payments'));
         }
-        //TODO check for rollback amount
         //TODO relation of models
         DB::beginTransaction();
 

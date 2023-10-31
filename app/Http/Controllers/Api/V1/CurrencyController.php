@@ -6,6 +6,8 @@ use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
+use App\Http\Resources\CurrencyCollection;
+use App\Http\Resources\CurrencyResource;
 use App\Models\Currency;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -21,7 +23,7 @@ class CurrencyController extends Controller
         $currencies = Currency::paginate($request->perpage ?? 10);
 
         return ApiResponse::message(__('currency.messages.currency_list_found_successfully'))
-            ->data($currencies)
+            ->data(new CurrencyCollection($currencies))
             ->status(200)
             ->send();
     }
@@ -47,7 +49,7 @@ class CurrencyController extends Controller
         ]);
 
         return ApiResponse::message(__('currency.messages.currency_successfuly_created'))
-            ->data($currency)
+            ->data(new CurrencyResource($currency))
             ->status(201)
             ->send();
     }
@@ -58,7 +60,7 @@ class CurrencyController extends Controller
     public function show(Currency $currency)
     {
         return ApiResponse::message(__('currency.messages.currency_successfuly_found'))
-            ->data($currency)
+            ->data(new CurrencyResource($currency))
             ->status(200)
             ->send();
     }
@@ -97,7 +99,7 @@ class CurrencyController extends Controller
         ]);
 
         return ApiResponse::message(__('currency.messages.currency_successfuly_inactivated'))
-            ->data($currency)
+            ->data(new CurrencyResource($currency))
             ->status(200)
             ->send();
     }
@@ -112,7 +114,7 @@ class CurrencyController extends Controller
         ]);
 
         return ApiResponse::message(__('currency.messages.currency_successfuly_activated'))
-            ->data($currency)
+            ->data(new CurrencyResource($currency))
             ->status(200)
             ->send();
     }

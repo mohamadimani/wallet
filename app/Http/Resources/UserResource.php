@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PaymentResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,14 +16,10 @@ class PaymentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'amount' => $this->amount,
-            'currency' => $this->currency,
-            'payment_at' => $this->payment_at,
+            'name' => $this->name,
+            'email' => $this->email,
+            'balance' => $this->balance,
             'created_at' => $this->created_at,
-            'unique_id' => $this->unique_id,
-            'user_id' => $this->user_id,
-            'status' => $this->status,
         ];
     }
 }

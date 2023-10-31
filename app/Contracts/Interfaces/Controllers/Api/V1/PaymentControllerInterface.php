@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\SwaggerDocs\Api\V1;
+namespace App\Contracts\Interfaces\Controllers\Api\V1;
 
 use App\Http\Requests\StorePaymentRequest;
-use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
-class PaymentControllerDoc
+interface PaymentControllerInterface
 {
 
     /**
@@ -18,6 +17,7 @@ class PaymentControllerDoc
      *
      *     summary="Payment List",
      *
+     *     security={{"bearerAuth":{}}},
      *      @OA\Response(response=200, description="Successful operation"),
      *      @OA\Response(response=201, description="Successful operation"),
      *      @OA\Response(response=202, description="Successful operation"),
@@ -28,9 +28,7 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function index(Request $request)
-    {
-    }
+    public function index(Request $request);
 
 
     /**
@@ -53,6 +51,7 @@ class PaymentControllerDoc
      *         @OA\Property(property="payment_at", type="text"),
      *     ),),),
      *
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(response=200, description="Successful operation"),
      *     @OA\Response(response=201, description="Successful operation"),
      *     @OA\Response(response=202, description="Successful operation"),
@@ -63,9 +62,7 @@ class PaymentControllerDoc
      *     @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function store(StorePaymentRequest $request)
-    {
-    }
+    public function store(StorePaymentRequest $request);
 
 
     /**
@@ -85,6 +82,7 @@ class PaymentControllerDoc
      *         @OA\Schema(type="string")
      *      ),
      *
+     *     security={{"bearerAuth":{}}},
      *      @OA\Response(response=200, description="Successful operation"),
      *      @OA\Response(response=201, description="Successful operation"),
      *      @OA\Response(response=202, description="Successful operation"),
@@ -95,9 +93,7 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function show(Payment $payment)
-    {
-    }
+    public function show(Payment $payment);
 
     /**
      * @OA\Patch(
@@ -116,6 +112,7 @@ class PaymentControllerDoc
      *         @OA\Schema(type="string")
      *      ),
      *
+     *     security={{"bearerAuth":{}}},
      *      @OA\Response(response=200, description="Successful operation"),
      *      @OA\Response(response=201, description="Successful operation"),
      *      @OA\Response(response=202, description="Successful operation"),
@@ -126,9 +123,7 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function reject(Payment $payment)
-    {
-    }
+    public function reject(Payment $payment);
 
 
     /**
@@ -148,6 +143,7 @@ class PaymentControllerDoc
      *         @OA\Schema(type="string")
      *      ),
      *
+     *     security={{"bearerAuth":{}}},
      *      @OA\Response(response=200, description="Successful operation"),
      *      @OA\Response(response=201, description="Successful operation"),
      *      @OA\Response(response=202, description="Successful operation"),
@@ -158,8 +154,5 @@ class PaymentControllerDoc
      *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function verify(Payment $payment)
-    {
-    }
-
+    public function verify(Payment $payment);
 }

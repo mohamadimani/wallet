@@ -7,6 +7,7 @@ use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTransferRequest;
 use App\Http\Requests\UpdateTransferRequest;
+use App\Http\Resources\TransferResource;
 use App\Models\Transfer;
 
 class TransferController extends Controller
@@ -39,10 +40,11 @@ class TransferController extends Controller
             'currency' => $request->currency,
             'created_by' => $request->created_by,
         ]);
+
         TransferStored::dispatch($transfer);
 
         return ApiResponse::message(__('transfer.messages.transfer_successfuly_created'))
-            ->data($transfer)
+            ->data(new TransferResource($transfer))
             ->status(201)
             ->send();
     }

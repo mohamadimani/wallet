@@ -7,6 +7,7 @@ use App\Events\RejectPaymentEvent;
 use App\Events\PaymentStored;
 use App\Events\PaymentVerified;
 use App\Events\StoreTransferEvent;
+use App\Listeners\ActionsApproval;
 use App\Listeners\CreateTransactionForPayment;
 use App\Listeners\PaymentRejectEmail;
 use App\Listeners\PaymentStoreEmail;
@@ -34,12 +35,14 @@ class EventServiceProvider extends ServiceProvider
         ],
         PaymentRejected::class => [
             PaymentRejectEmail::class,
+            ActionsApproval::class,
         ],
         PaymentStored::class => [
             PaymentStoreEmail::class,
         ],
         PaymentVerified::class => [
             PaymentVerifyEmail::class,
+            ActionsApproval::class,
         ],
         TransactionStore::class => [
             TransferCredit::class,

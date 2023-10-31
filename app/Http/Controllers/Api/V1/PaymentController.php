@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Contracts\Interfaces\Controllers\Api\V1\PaymentControllerInterface;
 use App\Enums\PaymentStatusEnum;
 use App\Events\PaymentStored;
 use App\Events\PaymentRejected;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 //TODO validations for all
-class PaymentController extends Controller
+class PaymentController extends Controller implements PaymentControllerInterface
 {
     /**
      * Display a listing of the resource.

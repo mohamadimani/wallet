@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PaymentCollection extends ResourceCollection
+class CurrencyCollection extends ResourceCollection
 {
     private $pagination;
 
@@ -23,6 +23,7 @@ class PaymentCollection extends ResourceCollection
 
         parent::__construct($resource);
     }
+
     /**
      * Transform the resource collection into an array.
      *

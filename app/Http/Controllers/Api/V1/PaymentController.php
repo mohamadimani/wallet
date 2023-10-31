@@ -12,6 +12,8 @@ use App\Http\Requests\StorePaymentRequest;
 use App\Models\Payment;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PaymentCollection;
+use App\Http\Resources\PaymentResource;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
@@ -30,7 +32,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
         $payments = Payment::paginate($request->perpage ?? 10);
 
         return ApiResponse::message(__('payment.messages.payment_list_found_successfully'))
-            ->data($payments)
+            ->data(new PaymentCollection($payments))
             ->status(200)
             ->send();
     }
@@ -73,9 +75,8 @@ class PaymentController extends Controller implements PaymentControllerInterface
 
         PaymentStored::dispatch($payment);
 
-        //TODO resource for return data in all
         return ApiResponse::message(__('payment.messages.payment_successfuly_created'))
-            ->data($payment)
+            ->data(new PaymentResource($payment))
             ->status(201)
             ->send();
     }
@@ -86,7 +87,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
     public function show(Payment $payment)
     {
         return ApiResponse::message(__('payment.messages.payment_successfuly_found'))
-            ->data($payment)
+            ->data(new PaymentResource($payment))
             ->status(200)
             ->send();
     }
@@ -107,7 +108,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
         $payment->delete();
 
         return ApiResponse::message(__('payment.messages.payment_successfuly_deleted'))
-            ->data($payment)
+            ->data(new PaymentResource($payment))
             ->status(200)
             ->send();
     }
@@ -129,7 +130,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
         PaymentRejected::dispatch($payment);
 
         return ApiResponse::message(__('payment.messages.the_payment_was_successfully_rejected'))
-            ->data($payment)
+            ->data(new PaymentResource($payment))
             ->status(200)
             ->send();
     }
@@ -172,7 +173,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
         PaymentVerified::dispatch($payment);
 
         return ApiResponse::message(__('payment.messages.the_payment_was_successfully_verified'))
-            ->data($payment)
+            ->data(new PaymentResource($payment))
             ->status(200)
             ->send();
     }

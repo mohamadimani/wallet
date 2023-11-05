@@ -35,4 +35,8 @@ class Payment extends Model
     {
         return 'unique_id';
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

@@ -15,4 +15,9 @@ class Transfer extends Model
         'created_by',
         'currency'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'from_account', 'id');
+    }
 }

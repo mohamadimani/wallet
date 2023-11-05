@@ -15,10 +15,11 @@ class TransferResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'balance' => $this->balance,
+            'from_account' => $this->user,
+            'to_account' => $this->user,
+            'created_by' => $this->created_by,
+            'amount' => $this->amount,
+            'currency' => $this->currency,
             'created_at' => $this->created_at,
         ];
     }

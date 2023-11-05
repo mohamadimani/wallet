@@ -22,8 +22,8 @@ class PaymentResource extends JsonResource
             'payment_at' => $this->payment_at,
             'created_at' => $this->created_at,
             'unique_id' => $this->unique_id,
-            'user_id' => $this->user_id,
             'status' => $this->status,
+            'user' => $this->user,
         ];
     }
 }
